@@ -12,9 +12,15 @@ struct ContentView: View {
     @StateObject var vm = MessageListViewModel()
     
     var body: some View {
-        Text("Hello, world!")
-            .padding()
-            .background(Color.theme.blue)
+        
+        if vm.isLoading {
+            LoadingView()
+        } else if vm.errorMessage != nil {
+            ErrorView()
+        } else {
+            MessageListView(vm: vm)
+        }
+        
     }
 }
 

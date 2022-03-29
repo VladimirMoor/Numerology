@@ -11,7 +11,7 @@ import Combine
 class MessageListViewModel: ObservableObject {
     
     @Published var messages: [String] = []
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
     @Published var errorMessage: String? = nil
     var cancellables = Set<AnyCancellable>()
     
@@ -23,7 +23,7 @@ class MessageListViewModel: ObservableObject {
     
     func getMessagesFromServer() {
         
-        isLoading = true
+//        isLoading = true
         errorMessage = nil
         guard let url = URL(string: "https://a-prokudin.node-api.numerology.dev-01.h.involta.ru/getMessages?offset=0") else { return }
         
@@ -38,6 +38,8 @@ class MessageListViewModel: ObservableObject {
             }
             .decode(type: Messages.self, decoder: JSONDecoder())
             .sink { [weak self] completion in
+                
+                self?.isLoading = false
                 
                 switch completion {
                     

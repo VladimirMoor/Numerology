@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct MessageListView: View {
+    
+    @ObservedObject var vm: MessageListViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text(vm.messages[0])
     }
 }
 
 struct MessageListView_Previews: PreviewProvider {
     static var previews: some View {
-        MessageListView()
+        MessageListView(vm: dev.messageListVM)
     }
 }

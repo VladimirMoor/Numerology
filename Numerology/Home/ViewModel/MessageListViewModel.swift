@@ -11,20 +11,23 @@ import Combine
 class MessageListViewModel: ObservableObject {
     
     @Published var messages: [String] = []
-    @Published var isLoading: Bool = true
+    @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     var cancellables = Set<AnyCancellable>()
     
-    private let messagesDataService = MessagesDataService()
-    
     init() {
-        getMessagesFromServer()
+        loadMessagesData()
     }
     
-    func getMessagesFromServer() {
-        
-//        isLoading = true
+    func loadMessagesData() {
+        isLoading = true
         errorMessage = nil
+        getMessagesFromServer()
+        
+    }
+    
+    private func getMessagesFromServer() {
+ 
         guard let url = URL(string: "https://a-prokudin.node-api.numerology.dev-01.h.involta.ru/getMessages?offset=0") else { return }
         
         URLSession.shared.dataTaskPublisher(for: url)
@@ -48,7 +51,7 @@ class MessageListViewModel: ObservableObject {
                     
                 case .failure(let error):
                     print("Error: \(error.localizedDescription)")
-                    self?.errorMessage = "Network error"
+                    self?.errorMessage = "При подключении к серверу произошла ошибка. Проверьте подключение к сети и повторите попытку позже..."
                 }
                 
             } receiveValue: { [weak self] message in
@@ -58,5 +61,6 @@ class MessageListViewModel: ObservableObject {
             .store(in: &cancellables)
 
     }
+    
     
 }

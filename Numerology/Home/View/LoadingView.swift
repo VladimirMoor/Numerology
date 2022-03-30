@@ -9,12 +9,25 @@ import SwiftUI
 
 struct LoadingView: View {
     var body: some View {
-        Text("Loading")
+        VStack {
+            Text("📥")
+                .font(.system(size: 80))
+            ProgressView()
+                .padding()
+            Text("Идет загрузка сообщений...")
+                .font(.headline)
+                .foregroundColor(Color.theme.accent)
+
+        }
     }
 }
 
 struct LoadingView_Previews: PreviewProvider {
     static var previews: some View {
-        LoadingView()
+        Group {
+            LoadingView()
+            LoadingView().preferredColorScheme(.dark)
+        }
+        
     }
 }

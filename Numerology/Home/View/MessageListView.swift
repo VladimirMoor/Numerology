@@ -12,12 +12,38 @@ struct MessageListView: View {
     @ObservedObject var vm: MessageListViewModel
     
     var body: some View {
-        Text(vm.messages[0])
+        
+        VStack(spacing: 0) {
+            HStack {
+                Text("Messages")
+                    .font(.largeTitle)
+                    .fontWeight(.heavy)
+                    .foregroundColor(Color.theme.blue)
+                Spacer()
+                Text("Error message here ")
+                    .foregroundColor(Color.secondary)
+            }
+            .padding()
+            .background(Color.theme.background.ignoresSafeArea(.all, edges: .top))
+        }
+        
+        
+        
+//        List {
+//            ForEach(0..<vm.messages.count) { index in
+//                Text(vm.messages[index])
+//            }
+//        }
     }
 }
 
 struct MessageListView_Previews: PreviewProvider {
     static var previews: some View {
-        MessageListView(vm: dev.messageListVM)
+        
+        Group {
+            MessageListView(vm: dev.messageListVM)
+            MessageListView(vm: dev.messageListVM).preferredColorScheme(.dark)
+        }
+       
     }
 }

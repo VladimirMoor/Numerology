@@ -15,7 +15,7 @@ struct ContentView: View {
         
         if vm.isLoading {
             LoadingView()
-        } else if vm.errorMessage != nil {
+        } else if (vm.errorMessage != nil) && (vm.isListLoaded != true) {
             ErrorView(vm: vm)
         } else {
             MessageListView(vm: vm)

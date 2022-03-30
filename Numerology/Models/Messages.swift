@@ -10,3 +10,4 @@ import Foundation
 struct Messages: Codable {
     let result: [String]
 }
+

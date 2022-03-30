@@ -21,7 +21,7 @@ struct ErrorView: View {
             Button {
                 vm.loadMessagesData()
             } label: {
-                Text("Попробовать снова...")
+                Text("Попробовать снова")
                     .font(.headline)
                     .padding()
                     .background(

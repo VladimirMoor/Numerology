@@ -5,10 +5,20 @@
 //  Created by Владимир Муравьев on 29.03.2022.
 //
 
+/*
+ Проект на языке Swift.
+
+ Необходимо реализовать экран со списком сообщений с возможностью подгрузки сообщений с сервера.
+ Сообщения должны располагаться снизу вверх друг за другом в порядке, присланном с сервера. Пользователь может скроллить сообщения сверху вниз (как в телеграме и других мессенджерах). Как только пользователь доскроллил до верха, подгружать следующую пачку сообщений, и так пока сообщения не закончатся. Хронология сообщений должна соблюдаться.
+
+ Можно реализовать любым способом. На выходе должно получится полностью рабочее и интуитивно понятное приложение. При добавлении сообщений экран не должен перескакивать(!). Где идет загрузка - поставить индикатор загрузки. Поддержка светлой и темной темы. Заглушка и попытка повторного запроса на случай отсутствия интернета или невалидного ответа от сервера (будет приходить с некоторой вероятностью).
+
+ */
+
 import SwiftUI
 
 struct MessageListView: View {
-    
+
     @ObservedObject var vm: MessageListViewModel
     @State var refresh = Refresh(started: false, released: false)
     
@@ -17,12 +27,16 @@ struct MessageListView: View {
         VStack(spacing: 0) {
             HStack {
                 Text("Messages")
-                    .font(.largeTitle)
+                    .font(.title)
                     .fontWeight(.heavy)
-                    .foregroundColor(Color.theme.blue)
+                    .foregroundColor(.purple)
                 Spacer()
-                Text("Error message here ")
-                    .foregroundColor(Color.secondary)
+                Text(vm.errorMessage ?? "")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(Color.theme.secondaryText)
+                    .lineLimit(1)
+    
             }
             .padding()
             .background(Color.theme.background.ignoresSafeArea(.all, edges: .top))
@@ -49,12 +63,12 @@ struct MessageListView: View {
                                 refresh.released = true
                             }
                             
-                            print("update1")
+                            updateList()
                         }
                         
                         if refresh.startOffset == refresh.offset && refresh.started && refresh.released && refresh.invalid {
                             refresh.invalid = false
-                            print("updeate2")
+                            updateList()
                         }
 
                     }
@@ -80,9 +94,9 @@ struct MessageListView: View {
 
                     
                     VStack {
-                        ForEach(0..<vm.messages.count) { index in
+                        ForEach(vm.messages, id: \.self) { message in
                             HStack {
-                                Text(vm.messages[index])
+                                Text(message)
                                     .foregroundColor(Color.theme.accent)
                                 Spacer()
                                 Image(systemName: "chevron.right")
@@ -98,6 +112,25 @@ struct MessageListView: View {
 
         }
         .background(Color.theme.listBackground.ignoresSafeArea())
+        .onAppear {
+            vm.isListLoaded = true
+        }
+
+    }
+    
+    func updateList() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            withAnimation(.linear) {
+                if refresh.startOffset == refresh.offset {
+                    
+                    vm.updateMessagesData()
+                    refresh.released = false
+                    refresh.started = false
+                } else {
+                    refresh.invalid = true
+                }
+            }
+        }
 
     }
 }
